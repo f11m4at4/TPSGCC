@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
+#include "../EnemyFSM.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -61,6 +63,31 @@ void ATP_ThirdPersonCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ATP_ThirdPersonCharacter::Fire(const FInputActionValue& Value)
+{
+	// 시선을 쏴서 부딪힌 지점에 파편을 재생하고 싶다.
+	// LineTrace 를 쏘자 -> 점 2개
+	FVector StartPos = FollowCamera->GetComponentLocation();
+	FVector EndPos = StartPos + FollowCamera->GetForwardVector() * 10000;
+	FHitResult HitInfo;
+	FCollisionQueryParams param;
+	param.AddIgnoredActor(this);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitInfo, StartPos, EndPos, ECC_Visibility, param);
+	if (bHit)
+	{
+		// 파편효과
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EffectFactory, HitInfo.Location);
+
+		// 부딪힌 녀석이 적이면 야 나 너 때렸어라고 알려주고 싶다.
+		AActor* hitObj = HitInfo.GetActor();
+		UEnemyFSM* enemy = Cast<UEnemyFSM>(hitObj->GetComponentByClass<UEnemyFSM>());
+		if (enemy)
+		{
+			enemy->OnDamagePrcess();
+		}
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -87,6 +114,8 @@ void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATP_ThirdPersonCharacter::Look);
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ATP_ThirdPersonCharacter::Fire);
 	}
 	else
 	{

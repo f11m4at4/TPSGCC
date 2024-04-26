@@ -60,7 +60,20 @@ public:
 	float Speed = 500;
 
 	void MoveState();
+
+// --------- attack ---------------
+	// 필요속성 : 공격범위
+	UPROPERTY(EditAnywhere, Category="Settings")
+	float AttackRange = 200;
+	// 필요속성 : 공격대기시간
+	UPROPERTY(EditAnywhere, Category="Settings")
+	float AttackDelayTime = 2;
+
 	void AttackState();
+
+	// 피격당할 이벤트 콜백 함수
+	void OnDamagePrcess();
+
 	void DamageState();
 	void DieState();
 };
