@@ -29,6 +29,48 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	switch (mState)
+	{
+	case EEnemyState::IDLE:
+		IdleState();
+		break;
+	case EEnemyState::MOVE:
+		MoveState();
+		break;
+	case EEnemyState::ATTACK:
+		AttackState();
+		break;
+	case EEnemyState::DAMAGE:
+		DamageState();
+		break;
+	case EEnemyState::DIE:
+		DieState();
+		break;
+	}
+}
+
+void UEnemyFSM::IdleState()
+{
+
+}
+
+void UEnemyFSM::MoveState()
+{
+
+}
+
+void UEnemyFSM::AttackState()
+{
+
+}
+
+void UEnemyFSM::DamageState()
+{
+
+}
+
+void UEnemyFSM::DieState()
+{
+
 }
 

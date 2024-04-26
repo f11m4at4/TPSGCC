@@ -7,6 +7,16 @@
 #include "EnemyFSM.generated.h"
 
 
+UENUM(BlueprintType)
+enum class EEnemyState : uint8
+{
+	IDLE = 0 UMETA(DisplayName=BradIdle),
+	MOVE,
+	ATTACK,
+	DAMAGE,
+	DIE
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TPSGCC_API UEnemyFSM : public UActorComponent
 {
@@ -24,5 +34,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+public:
+	EEnemyState mState = EEnemyState::IDLE;
+
+	void IdleState();
+	void MoveState();
+	void AttackState();
+	void DamageState();
+	void DieState();
 };
