@@ -35,7 +35,15 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
+	UPROPERTY(BlueprintReadOnly)
 	EEnemyState mState = EEnemyState::IDLE;
+
+	// Idle 필요속성
+	// 경과시간
+	float CurrentTime;
+	// 대기시간
+	UPROPERTY(EditAnywhere)
+	float IdleDelayTime = 2;
 
 	void IdleState();
 	void MoveState();
