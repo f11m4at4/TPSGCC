@@ -2,6 +2,9 @@
 
 
 #include "EnemyFSM.h"
+#include "TP_ThirdPerson/TP_ThirdPersonCharacter.h"
+#include "Enemy.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UEnemyFSM::UEnemyFSM()
@@ -20,7 +23,9 @@ void UEnemyFSM::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	Me = Cast<AEnemy>(GetOwner());
+	// Taret 을 찾아오자
+	Taret = Cast<ATP_ThirdPersonCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ATP_ThirdPersonCharacter::StaticClass()));
 }
 
 
@@ -28,6 +33,10 @@ void UEnemyFSM::BeginPlay()
 void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// 현재 상태 찍어보기
+	//FString stateStr = UEnum::GetValueAsString<EEnemyState>(mState);
+	//UE_LOG(LogTemp, Warning, TEXT("Current State : %s"), *stateStr);
 
 	switch (mState)
 	{
@@ -64,9 +73,16 @@ void UEnemyFSM::IdleState()
 	}
 }
 
+//타겟 방향으로 이동하고 싶다.
+// 필요속성 : 타겟, 이동속도
 void UEnemyFSM::MoveState()
 {
-
+	// 1. 방향이 필요하다.
+	FVector Direction = Taret->GetActorLocation() - Me->GetActorLocation();
+	Direction.Normalize();
+	// 2. 이동하고 싶다.
+	FVector P = Me->GetActorLocation() + Direction * Speed * GetWorld()->DeltaTimeSeconds;
+	Me->SetActorLocation(P);
 }
 
 void UEnemyFSM::AttackState()

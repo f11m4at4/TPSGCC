@@ -46,6 +46,19 @@ public:
 	float IdleDelayTime = 2;
 
 	void IdleState();
+
+// ---------- Move --------------
+// 필요속성 : 타겟, 이동속도
+	UPROPERTY()
+	class ATP_ThirdPersonCharacter* Taret;
+
+	// 나자신 액터
+	UPROPERTY()
+	class AEnemy* Me;
+
+	UPROPERTY(EditAnywhere, Category="Settings")
+	float Speed = 500;
+
 	void MoveState();
 	void AttackState();
 	void DamageState();
